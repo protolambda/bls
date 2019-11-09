@@ -1,6 +1,7 @@
 package g1pubs_test
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"testing"
@@ -359,6 +360,18 @@ func TestSignatureSerializeDeserialize(t *testing.T) {
 	if !g1pubs.Verify(msg, pub, sigDeser) {
 		t.Fatal("message did not verify after serialization/deserialization")
 	}
+}
+
+func TestPubkeyDeserialize(t *testing.T) {
+	unexpectedPub := "b5a44e98d450f266567be0d82e60d965aa8703f73a9a71aa03b98215444f781d00000000000000000000000000000000"
+	var pubkey [48]byte
+	if _, err := hex.Decode(pubkey[:], []byte(unexpectedPub)); err != nil {
+		t.Fatal(err)
+	}
+	// panics unexpectedly! no error
+	pubDeser, err := g1pubs.DeserializePublicKey(pubkey)
+	t.Log(err)
+	t.Log(pubDeser.String())
 }
 
 func TestPubkeySerializeDeserialize(t *testing.T) {
